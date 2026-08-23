@@ -1,0 +1,22 @@
+{
+  "name": "session-03-document-intelligence",
+  "version": "1.0.0",
+  "description": "Autonomous Document Intelligence Platform with Decoupled 6-Tier Architecture",
+  "main": "dist/backend/server.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/backend/server.js",
+    "dev": "node src/backend/server.js",
+    "test": "node --test tests/unit/*.test.js tests/integration/*.test.js tests/extraction/*.test.js tests/validation/*.test.js tests/adversarial/*.test.js",
+    "test:unit": "node --test tests/unit/*.test.js",
+    "test:integration": "node --test tests/integration/*.test.js",
+    "test:extraction": "node --test tests/extraction/*.test.js",
+    "test:validation": "node --test tests/validation/*.test.js",
+    "test:adversarial": "node --test tests/adversarial/*.test.js",
+    "benchmark": "node scripts/evaluation/run_benchmarks.js"
+  },
+  "keywords": ["document-intelligence", "ocr", "extraction", "validation", "idp"],
+  "author": "Antigravity Autonomous Factory",
+  "license": "ISC"
+}

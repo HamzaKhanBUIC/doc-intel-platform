@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Environment Variables
+.env
+.env.local
+
+# Build outputs
+dist/
+build/
+
+# IDE & System
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Storage & Temporary test artifacts
+data/test_storage/
+data/storage/
+*.log
+
+# Internal Agent Scaffolding
+.agent/
+.agents/
+AGENTS.md
