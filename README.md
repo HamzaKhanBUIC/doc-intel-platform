@@ -25,6 +25,52 @@
 
 ---
 
+## 🖥️ Visual Walkthrough & Interactive Cockpit Tour
+
+### 1. Dual-Pane Human-in-the-Loop Review Cockpit
+
+![Review Cockpit Demo](docs/assets/review_cockpit_demo.png)
+
+#### 🔍 UI Callouts & Workflow Citations:
+- **`[Citation 1: Spatial Bounding-Box Layer]`** *(Left Pane)*: An SVG vector overlay dynamically synchronized with the raw document image/stream. Focusing any structured field instantly highlights its spatial coordinate region `[x1, y1, x2, y2]`.
+- **`[Citation 2: Deterministic Math Discrepancy Banner]`** *(Top-Right Pane)*: Displays real-time arithmetic verification status. If $\text{Subtotal} + \text{Tax} \neq \text{Grand Total}$, a high-visibility amber/red banner flags the exact dollar mismatch before approval.
+- **`[Citation 3: Fuzzy Vendor Matcher Badge]`** *(Right Pane, Vendor Input)*: Indicates automatic reconciliation against the Vendor Master Catalog (e.g., `Matched: Pacific Overland Logistics LLC [VEND_002]`).
+- **`[Citation 4: Editable Line-Item Ledger]`** *(Right Pane, Table)*: Allows granular line modifications with automatic recalculation of $\text{Quantity} \times \text{Unit Price} = \text{Amount}$ and live subtotal rollup.
+- **`[Citation 5: High-Speed Keyboard Shortcuts]`** *(Bottom Action Bar)*: Back-office operators can approve (`Alt+A`), reject (`Alt+R`), or advance (`Alt+N`) documents in under 15 seconds per exception.
+
+---
+
+### 2. Multi-System ERP Export Drawer
+
+![ERP Export Demo](docs/assets/erp_export_demo.png)
+
+#### 🔍 UI Callouts & Workflow Citations:
+- **`[Citation 6: ERP Schema Selector]`** *(Top Drawer Tabs)*: Instant tabbed switching between **QuickBooks Online**, **Xero API**, **Oracle NetSuite SuiteTalk**, and **SAP S/4HANA BAPI**.
+- **`[Citation 7: Validated JSON/XML Payload Preview]`** *(Code Box)*: Formatted, production-ready payload containing verified line items, GL account distributions, tax codes, and cryptographic SHA-256 audit hashes.
+- **`[Citation 8: 1-Click Clipboard Export]`** *(Bottom Action)*: Single-click copying for direct testing or webhook relay into accounting middleware.
+
+---
+
+### 3. Enterprise Vendor Master Catalog & GL Code Directory
+
+![Vendor Master Demo](docs/assets/vendor_master_demo.png)
+
+#### 🔍 UI Callouts & Workflow Citations:
+- **`[Citation 9: Canonical Master Resolution]`** *(Table Rows)*: Maps noisy OCR strings to verified legal business names, tax/VAT identifiers (`US-94829103`, `US-88129044`), and contractual payment terms (`NET30`, `NET15`).
+- **`[Citation 10: Automated GL Account Coding]`** *(GL Column)*: Pre-assigns compliant General Ledger accounting codes (e.g., `5010 - Cost of Goods Sold`, `6020 - Freight & Delivery Expense`) to eliminate manual manual bookkeeping entries.
+
+---
+
+### 4. Executive Spend Analytics & Financial Reporting
+
+![Analytics & Reports Demo](docs/assets/reports_analytics_demo.png)
+
+#### 🔍 UI Callouts & Workflow Citations:
+- **`[Citation 11: Real-Time Process KPI Cards]`** *(Top Metrics Grid)*: Tracks straight-through processing rates (Auto-Approval %), total verified spend, and cumulative tax liabilities.
+- **`[Citation 12: Vendor Volume & Category Distributions]`** *(Bottom Split)*: Aggregates spend breakdown across suppliers and operational categories for audit-ready financial close.
+
+---
+
 ## 📐 System Architecture
 
 ```mermaid
