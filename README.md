@@ -1,134 +1,137 @@
-# DocIntel — Enterprise Document Intelligence & Financial Reconciliation Platform
+# DocIntel — Document Processing & Accounts Payable Reconciliation Engine
 
-[![Build & Test Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/)
-[![Test Suite](https://img.shields.io/badge/tests-24%20passed%20%7C%200%20failed-success.svg)](https://github.com/)
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/)
+[![Tests Passing](https://img.shields.io/badge/tests-24%20passed%20%7C%200%20failed-success.svg)](https://github.com/)
 [![Throughput](https://img.shields.io/badge/throughput-44.5%20docs%2Fsec-blue.svg)](https://github.com/)
-[![Math Invariants](https://img.shields.io/badge/validation-100%25%20deterministic-blueviolet.svg)](https://github.com/)
+[![Validation](https://img.shields.io/badge/math%20validation-100%25%20deterministic-blueviolet.svg)](https://github.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**DocIntel** is a high-throughput, decoupled document intelligence and financial reconciliation engine engineered to ingest unstructured, semi-structured, and electronic business documents (PDFs, scans, receipts, purchase orders, bills of lading, and UBL 2.1 XML invoices), extract structured entities with spatial bounding-box provenance, enforce 100% deterministic arithmetic invariants, and export synchronized payloads to enterprise ERP systems (**SAP S/4HANA**, **Oracle NetSuite**, **QuickBooks Online**, and **Xero**).
+**DocIntel** is a high-speed document processing engine designed for accounts payable and logistics back-offices. It ingests invoices, receipts, bills of lading, and UBL 2.1 XML files, extracts structured line items with exact bounding-box coordinates, verifies every mathematical balance deterministically, and exports directly to **SAP S/4HANA**, **Oracle NetSuite**, **QuickBooks Online**, and **Xero**.
 
 ---
 
-## ⚡ Key Capabilities
+## ⚡ What It Does
 
-- **Strict 6-Tier Decoupled Pipeline**: Explicitly decouples storage and processing states across `raw document` $\rightarrow$ `extracted data` $\rightarrow$ `normalized data` $\rightarrow$ `validated data` $\rightarrow$ `categorized data` $\rightarrow$ `derived reports`.
-- **Zero-Trust Multimodal Ingestion**: Magic-byte MIME inspection, SHA-256 content-addressed deduplication, and 25MB boundary defense.
-- **Deterministic Arithmetic Validation**: Independent cross-verification eliminating hallucinations:
+- **Decoupled 6-Tier Architecture**: Clean separation between `raw documents` $\rightarrow$ `extracted tokens` $\rightarrow$ `normalized values` $\rightarrow$ `validated records` $\rightarrow$ `GL categorization` $\rightarrow$ `ERP exports`.
+- **Zero-Trust Ingestion**: Magic-byte MIME sniffing, SHA-256 content deduplication, and 25MB file limits.
+- **Deterministic Math Checks**: Independent formula validation eliminates hallucinated numbers:
   $$\sum \text{Line Items} == \text{Subtotal}$$
-  $$\text{Subtotal} + \text{Tax} - \text{Discount} + \text{Shipping} == \text{Grand Total}$$
+  $$\text{Subtotal} + \text{Tax} - \text{Discount} == \text{Grand Total}$$
   $$\text{Quantity} \times \text{Unit Price} == \text{Line Amount}$$
-- **Fuzzy Vendor Master Catalog**: Levenshtein Distance and Token Sort Ratio matching noisy OCR supplier strings against canonical vendor directories with aliases, tax IDs, and GL account codes.
-- **Native Enterprise ERP Connectors**: Pre-built adapters generating compliant payloads for **SAP S/4HANA (BAPI/IDoc)**, **Oracle NetSuite (SuiteTalk)**, **QuickBooks Online (Bill API)**, and **Xero (ACCPAY)**.
-- **High-Craft Dual-Pane Review Cockpit**: Operator triage UI featuring reactive SVG bounding-box overlays, real-time math validation banners, and sub-15s keyboard shortcuts (`Alt+A` Approve, `Alt+R` Reject).
-- **Sub-Millisecond Processing & Scalability**: Average extraction latency of **0.33ms** per document; sustained concurrent throughput of **44.5 docs/second** (100 concurrent uploads in 2.2s).
+- **Fuzzy Vendor Master Directory**: Uses Levenshtein distance and token sorting to map messy supplier strings to registered vendor IDs, tax numbers, and default GL expense codes.
+- **Pre-Built ERP Connectors**: Direct schema adapters for **SAP S/4HANA (BAPI)**, **Oracle NetSuite (SuiteTalk)**, **QuickBooks Online (Bill API)**, and **Xero (ACCPAY)**.
+- **Keyboard-First Review Workspace**: Dual-pane interface with responsive SVG bounding boxes, inline math warnings, and fast shortcut triage (`Alt+A` to approve, `Alt+R` to reject).
+- **Sub-Millisecond Speed**: Ingests, parses, and validates digital documents in **0.33ms** on average. Handles **44.5 documents per second** under concurrent load.
 
 ---
 
-## 🖥️ Visual Walkthrough & Interactive Cockpit Tour
+## 🖥️ Interface Walkthrough
 
-### 1. Dual-Pane Human-in-the-Loop Review Cockpit
+### 1. Dual-Pane Invoice Review Workspace
 
-![Review Cockpit Demo](docs/assets/review_cockpit_demo.png)
+![Review Workspace](docs/assets/review_cockpit_demo.png)
 
-#### 🔍 UI Callouts & Workflow Citations:
-- **`[Citation 1: Spatial Bounding-Box Layer]`** *(Left Pane)*: An SVG vector overlay dynamically synchronized with the raw document image/stream. Focusing any structured field instantly highlights its spatial coordinate region `[x1, y1, x2, y2]`.
-- **`[Citation 2: Deterministic Math Discrepancy Banner]`** *(Top-Right Pane)*: Displays real-time arithmetic verification status. If $\text{Subtotal} + \text{Tax} \neq \text{Grand Total}$, a high-visibility amber/red banner flags the exact dollar mismatch before approval.
-- **`[Citation 3: Fuzzy Vendor Matcher Badge]`** *(Right Pane, Vendor Input)*: Indicates automatic reconciliation against the Vendor Master Catalog (e.g., `Matched: Pacific Overland Logistics LLC [VEND_002]`).
-- **`[Citation 4: Editable Line-Item Ledger]`** *(Right Pane, Table)*: Allows granular line modifications with automatic recalculation of $\text{Quantity} \times \text{Unit Price} = \text{Amount}$ and live subtotal rollup.
-- **`[Citation 5: High-Speed Keyboard Shortcuts]`** *(Bottom Action Bar)*: Back-office operators can approve (`Alt+A`), reject (`Alt+R`), or advance (`Alt+N`) documents in under 15 seconds per exception.
-
----
-
-### 2. Multi-System ERP Export Drawer
-
-![ERP Export Demo](docs/assets/erp_export_demo.png)
-
-#### 🔍 UI Callouts & Workflow Citations:
-- **`[Citation 6: ERP Schema Selector]`** *(Top Drawer Tabs)*: Instant tabbed switching between **QuickBooks Online**, **Xero API**, **Oracle NetSuite SuiteTalk**, and **SAP S/4HANA BAPI**.
-- **`[Citation 7: Validated JSON/XML Payload Preview]`** *(Code Box)*: Formatted, production-ready payload containing verified line items, GL account distributions, tax codes, and cryptographic SHA-256 audit hashes.
-- **`[Citation 8: 1-Click Clipboard Export]`** *(Bottom Action)*: Single-click copying for direct testing or webhook relay into accounting middleware.
+#### Annotated Features:
+- **`[1] Synchronized Bounding-Box Overlay`** *(Left Pane)*: Vector coordinate layer mapped to source text. Clicking or focusing any field highlights its exact pixel box `[x1, y1, x2, y2]`.
+- **`[2] Real-Time Arithmetic Warning`** *(Top Right)*: Verifies $\text{Subtotal} + \text{Tax} == \text{Total}$. If an invoice has a balance mismatch, it flags the exact difference with a 1-click **Auto-balance** option.
+- **`[3] Vendor Master Match Box`** *(Right Pane)*: Shows the resolved supplier profile, verified Tax ID, payment terms (`NET15`), and assigned GL account (`6020 - Freight & Delivery`).
+- **`[4] Editable Line Items Table`** *(Right Pane)*: Edit descriptions, quantities, unit prices, or delete line items with instant total recalculation.
+- **`[5] Keyboard Shortcuts`** *(Bottom Toolbar)*: Accelerates operator triage:
+  - `Alt + A`: Approve invoice and load next
+  - `Alt + R`: Reject invoice
+  - `Alt + N` / `Alt + P`: Next / Previous document
+  - `Ctrl + K`: Quick jump & search
 
 ---
 
-### 3. Enterprise Vendor Master Catalog & GL Code Directory
+### 2. ERP Export Drawer
 
-![Vendor Master Demo](docs/assets/vendor_master_demo.png)
+![ERP Export Drawer](docs/assets/erp_export_demo.png)
 
-#### 🔍 UI Callouts & Workflow Citations:
-- **`[Citation 9: Canonical Master Resolution]`** *(Table Rows)*: Maps noisy OCR strings to verified legal business names, tax/VAT identifiers (`US-94829103`, `US-88129044`), and contractual payment terms (`NET30`, `NET15`).
-- **`[Citation 10: Automated GL Account Coding]`** *(GL Column)*: Pre-assigns compliant General Ledger accounting codes (e.g., `5010 - Cost of Goods Sold`, `6020 - Freight & Delivery Expense`) to eliminate manual manual bookkeeping entries.
-
----
-
-### 4. Executive Spend Analytics & Financial Reporting
-
-![Analytics & Reports Demo](docs/assets/reports_analytics_demo.png)
-
-#### 🔍 UI Callouts & Workflow Citations:
-- **`[Citation 11: Real-Time Process KPI Cards]`** *(Top Metrics Grid)*: Tracks straight-through processing rates (Auto-Approval %), total verified spend, and cumulative tax liabilities.
-- **`[Citation 12: Vendor Volume & Category Distributions]`** *(Bottom Split)*: Aggregates spend breakdown across suppliers and operational categories for audit-ready financial close.
+#### Annotated Features:
+- **`[6] Target System Tabs`** *(Top)*: Switch between **QuickBooks Online**, **Xero**, **Oracle NetSuite**, and **SAP S/4HANA**.
+- **`[7] Formatted JSON / XML Preview`** *(Center)*: Ready-to-send payload with validated line items, GL distributions, tax lines, and SHA-256 file hashes.
+- **`[8] 1-Click Copy`** *(Bottom)*: Copies the payload to clipboard for webhook relay or API testing.
 
 ---
 
-## 📐 System Architecture
+### 3. Vendor Master Directory
+
+![Vendor Master](docs/assets/vendor_master_demo.png)
+
+#### Annotated Features:
+- **`[9] Registered Supplier Profiles`** *(Table)*: Maps OCR variations to verified company names, tax IDs (`US-94829103`, `US-88129044`), and payment terms (`NET30`, `NET15`).
+- **`[10] GL Account Mapping`** *(GL Column)*: Pre-assigns General Ledger codes (`5010 - Cost of Goods Sold`, `6020 - Freight & Delivery`) to remove manual bookkeeping entry.
+
+---
+
+### 4. Spend Analytics & Reconciliation
+
+![Analytics](docs/assets/reports_analytics_demo.png)
+
+#### Annotated Features:
+- **`[11] Real-Time Status Cards`** *(Top Grid)*: Total documents processed, straight-through auto-approval percentage, total spend, and tracked tax.
+- **`[12] Spend Breakdowns`** *(Bottom Grid)*: Shows volume by vendor and category allocations.
+
+---
+
+## 📐 System Pipeline
 
 ```mermaid
 graph TD
-    A["Raw Document Ingestion<br/>(PDF, PNG, JPG, UBL XML)"] -->|"SHA-256 Hash & MIME Sniff"| B["Tier 1: Immutable Storage"]
-    B -->|"Stream / AST Tokenizer"| C["Tier 2: Extracted Data<br/>(Line Items, Provenance BBoxes)"]
-    C -->|"Fuzzy Match & Normalization"| D["Tier 3: Normalized Data<br/>(Vendor Master, ISO-4217, ISO-8601)"]
+    A["Raw Document Upload<br/>(PDF, PNG, JPG, UBL XML)"] -->|"SHA-256 & MIME Check"| B["Tier 1: Storage"]
+    B -->|"Stream / AST Tokenizer"| C["Tier 2: Extracted Data<br/>(Fields & Bounding Boxes)"]
+    C -->|"Fuzzy Matching & Parser"| D["Tier 3: Normalized Data<br/>(Vendor Master, ISO-4217, ISO-8601)"]
     D -->|"Deterministic Math Engine"| E{"Tier 4: Validation Engine"}
     
-    E -->|"Math Valid (100% Invariant)"| F["Tier 5: Categorized & Ledger<br/>(GL Account Mapping)"]
-    E -->|"Discrepancy / Anomaly Detected"| G["Human-in-the-Loop Review Queue<br/>(Dual-Pane SVG Cockpit)"]
+    E -->|"Math Valid (100% Invariant)"| F["Tier 5: Categorized & Ledger<br/>(GL Mapping)"]
+    E -->|"Mismatch Detected"| G["Review Queue<br/>(Dual-Pane Workspace)"]
     
-    G -->|"Operator Correction (Alt+A)"| F
-    G -->|"Operator Rejection (Alt+R)"| H["Rejected Document Store"]
+    G -->|"Operator Approval (Alt+A)"| F
+    G -->|"Operator Rejection (Alt+R)"| H["Rejected Store"]
     
-    F -->|"Enterprise Adapters"| I["Tier 6: ERP & Analytics Export"]
+    F -->|"ERP Connectors"| I["Tier 6: Export & Analytics"]
     I --> J["SAP S/4HANA"]
     I --> K["Oracle NetSuite"]
     I --> L["QuickBooks Online"]
-    I --> M["Xero Accounting"]
-    I --> N["Prometheus Telemetry"]
+    I --> M["Xero"]
 ```
 
 ---
 
-## 📊 Benchmark & Performance Matrices
+## 📊 Benchmark Results
 
-### 1. Multi-Round Mutation & OCR Perturbation Fuzzing (50 Fixtures)
+### 1. Multi-Round Perturbation Test (50 Fixtures)
 
-Evaluated across 50 production-grade document fixtures across 10 operational dimensions (digital PDFs, noisy scans, multi-page tables, accessorial freight fees, multi-currency invoices):
+Tested across 50 production-grade document fixtures (clean PDFs, degraded scans, multi-page tables, accessorial fees, foreign currencies):
 
 | Metric | Round 1 (Clean Baseline) | Round 2 (2% OCR Noise) | Round 3 (5% Stress Scan) |
 |---|---|---|---|
 | **Document Count** | 50 Fixtures | 50 Fixtures | 50 Fixtures |
-| **Throughput Latency (Avg)** | **0.33 ms** | **0.18 ms** | **0.31 ms** |
+| **Average Latency** | **0.33 ms** | **0.18 ms** | **0.31 ms** |
 | **p50 Latency** | **0.24 ms** | **0.22 ms** | **0.39 ms** |
 | **p90 Latency** | **0.69 ms** | **0.34 ms** | **0.59 ms** |
-| **Overall Extraction F1 Score** | **100.0%** | **97.3%** | **91.6%** |
-| **Arithmetic Invariant Conformance** | **100.0%** | **84.0%** | **56.0%** |
+| **Extraction F1 Score** | **100.0%** | **97.3%** | **91.6%** |
+| **Math Invariant Conformance** | **100.0%** | **84.0%** | **56.0%** |
 
-### 2. High-Concurrency Burst Test (100 Concurrent Uploads)
+### 2. Concurrent Load Test (100 Concurrent Uploads)
 
-- **Total Requests**: 100 concurrent multipart document uploads
+- **Total Requests**: 100 concurrent multipart uploads
 - **Success Rate**: 100/100 (100.0%)
-- **Total Wall Clock Duration**: **2,249 ms**
-- **Effective Processing Throughput**: **44.5 documents / second**
+- **Total Duration**: **2,249 ms**
+- **Throughput**: **44.5 documents / second**
 - **Latency Distribution**: $p50 = 19.73\text{ms}$, $p90 = 23.60\text{ms}$, $p99 = 33.63\text{ms}$
-- **Peak Memory Heap**: **15.36 MB**
+- **Peak Memory**: **15.36 MB heap**
 
 ---
 
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js >= 18.0.0 (Native ESM and Test Runner support)
+- Node.js >= 18.0.0
 - Git
 
-### Installation & Server Launch
+### Run Locally
 
 ```bash
 # Clone the repository
@@ -138,37 +141,35 @@ cd doc-intel-platform
 # Install dependencies (zero external runtime dependencies)
 npm install
 
-# Start the platform web server
+# Start the web server
 npm start
 ```
 
-Visit the interactive cockpit at **`http://localhost:3000`**.
+Open your browser to **`http://localhost:3000`**.
 
 ---
 
-## 🧪 Testing & Continuous Benchmarks
+## 🧪 Automated Tests
 
-DocIntel is verified by 24 deterministic automated unit, integration, validation, and adversarial test suites:
+Run all 24 automated unit, integration, validation, and fuzzing tests:
 
 ```bash
-# Run all 24 automated test suites
+# Run unit and integration tests
 npm test
 
-# Run continuous iteration benchmark across 50 document fixtures
+# Run 50-document continuous benchmark
 npm run benchmark
 node scripts/evaluation/iterate_and_benchmark.js
 
-# Run high-concurrency stress test (100 concurrent uploads)
+# Run 100-request concurrent load test
 node scripts/evaluation/run_load_test.js
 ```
 
 ---
 
-## 🔌 Enterprise ERP Export Schemas
+## 🔌 ERP Export Payload Examples
 
-DocIntel provides dedicated bidirectional export adapters for global financial systems:
-
-### 1. SAP S/4HANA (BAPI / IDoc INVOIC02)
+### 1. SAP S/4HANA (BAPI / IDoc)
 ```json
 {
   "HEADERDATA": {
@@ -213,21 +214,6 @@ DocIntel provides dedicated bidirectional export adapters for global financial s
 }
 ```
 
-### 3. Oracle NetSuite (SuiteTalk REST / SOAP)
-```json
-{
-  "vendorBill": {
-    "tranId": "INV-88991",
-    "tranDate": "2026-08-20",
-    "userTotal": 1080.00,
-    "entity": { "id": "VEND_ACME", "refName": "Acme Industrial Supplies Inc." },
-    "itemList": {
-      "item": [{ "line": 1, "rate": 100.00, "quantity": 10, "amount": 1000.00 }]
-    }
-  }
-}
-```
-
 ---
 
 ## 📡 REST API Reference
@@ -235,24 +221,15 @@ DocIntel provides dedicated bidirectional export adapters for global financial s
 | Endpoint | Method | Description |
 |---|---|---|
 | `/api/documents/upload` | `POST` | Upload and process raw document (`PDF`, `PNG`, `XML`, `CSV`) |
-| `/api/documents` | `GET` | List all processed documents with status filter |
-| `/api/documents/:id` | `GET` | Retrieve structured document schema, bounding boxes, and audit trail |
-| `/api/review-queue` | `GET` | Retrieve pending documents requiring operator human triage |
-| `/api/documents/:id/review` | `POST` | Submit human verification (`APPROVE` or `REJECT`) with manual corrections |
-| `/api/vendors` | `GET` | List canonical vendor master directory and GL accounts |
-| `/api/reports/summary` | `GET` | Aggregated financial spend, tax liability, and category breakdowns |
+| `/api/documents` | `GET` | List processed documents with status filter |
+| `/api/documents/:id` | `GET` | Get document data, bounding boxes, and audit trail |
+| `/api/review-queue` | `GET` | Get pending invoices requiring review |
+| `/api/documents/:id/review` | `POST` | Submit review (`APPROVE` or `REJECT`) with manual edits |
+| `/api/vendors` | `GET` | List vendor master directory and default GL accounts |
+| `/api/reports/summary` | `GET` | Summary spend, tax, and category totals |
 | `/api/export?format=<erp>` | `GET` | Export payload (`quickbooks`, `xero`, `netsuite`, `sap`, `csv`) |
-| `/api/metrics?format=prometheus` | `GET` | Prometheus telemetry metric stream |
-| `/api/health` | `GET` | System health check and uptime status |
-
----
-
-## 🛡️ Security & Privacy Posture
-
-- **Untrusted Data Isolation**: All raw document texts are treated as inert untrusted strings. Control characters are stripped to prevent indirect prompt injection attacks.
-- **SHA-256 Content-Addressed Storage**: Enforces strict document immutability and duplicate file detection.
-- **Zero Hardcoded Secrets**: Fully configurable through standard environment templates.
-- **Stateless & Scalable**: Pure functional extraction and validation core with zero memory leaks under 100+ concurrent requests.
+| `/api/metrics?format=prometheus` | `GET` | Prometheus metrics stream |
+| `/api/health` | `GET` | Health check endpoint |
 
 ---
 

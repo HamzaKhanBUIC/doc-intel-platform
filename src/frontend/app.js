@@ -1,7 +1,5 @@
 /**
- * DocIntel — Enterprise Frontend Interaction Engine
- * Features bidirectional SVG bounding-box synchronization, 1-click auto-repair,
- * ERP drawer controller, command palette (Cmd+K), and audit lineage visualization.
+ * DocIntel — Accounts Payable Review & Verification Controller
  */
 
 let documents = [];
@@ -37,9 +35,6 @@ async function fetchVendors() {
     const data = await res.json();
     vendors = data.vendors || [];
     renderVendorsTable();
-    if (document.getElementById('vendorMasterBadge')) {
-      document.getElementById('vendorMasterBadge').innerText = vendors.length;
-    }
   } catch (err) {
     console.error('Failed fetching vendors:', err);
   }
@@ -47,29 +42,31 @@ async function fetchVendors() {
 
 function updateHeaderCounts() {
   const queueDocs = documents.filter(d => d.status === 'REVIEW_REQUIRED');
-  document.getElementById('queueCountBadge').innerText = queueDocs.length;
-  document.getElementById('totalCountBadge').innerText = documents.length;
+  const queueBadge = document.getElementById('queueCountBadge');
+  const totalBadge = document.getElementById('totalCountBadge');
+  if (queueBadge) queueBadge.innerText = queueDocs.length;
+  if (totalBadge) totalBadge.innerText = documents.length;
 }
 
 function switchView(viewName) {
   document.querySelectorAll('.view-panel').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(t => t.classList.remove('active'));
 
   if (viewName === 'review') {
-    document.getElementById('viewReview').classList.add('active');
-    document.getElementById('tabReview').classList.add('active');
+    document.getElementById('viewReview')?.classList.add('active');
+    document.getElementById('tabReview')?.classList.add('active');
     renderReviewQueue();
   } else if (viewName === 'documents') {
-    document.getElementById('viewDocuments').classList.add('active');
-    document.getElementById('tabDocuments').classList.add('active');
+    document.getElementById('viewDocuments')?.classList.add('active');
+    document.getElementById('tabDocuments')?.classList.add('active');
     renderDocumentsTable();
   } else if (viewName === 'vendors') {
-    document.getElementById('viewVendors').classList.add('active');
-    document.getElementById('tabVendors').classList.add('active');
+    document.getElementById('viewVendors')?.classList.add('active');
+    document.getElementById('tabVendors')?.classList.add('active');
     renderVendorsTable();
   } else if (viewName === 'reports') {
-    document.getElementById('viewReports').classList.add('active');
-    document.getElementById('tabReports').classList.add('active');
+    document.getElementById('viewReports')?.classList.add('active');
+    document.getElementById('tabReports')?.classList.add('active');
     renderReports();
   }
 }
@@ -81,14 +78,13 @@ function getReviewQueue() {
 function renderReviewQueue() {
   const queue = getReviewQueue();
   if (queue.length === 0) {
-    document.getElementById('currentDocTitle').innerText = 'No Pending Triage Exceptions';
-    document.getElementById('currentDocStatusPill').innerText = 'ALL CLEAR (100%)';
-    document.getElementById('currentDocStatusPill').className = 'status-pill status-pill-success';
+    document.getElementById('currentDocTitle').innerText = 'No Pending Invoices';
+    document.getElementById('currentDocStatusTag').innerText = 'All Verified';
+    document.getElementById('currentDocStatusTag').className = 'status-tag tag-success';
     document.getElementById('renderedDocText').innerHTML = `
       <div style="padding: 60px 20px; text-align: center; color: #64748B;">
-        <div style="font-size: 32px; margin-bottom: 12px;">🎉</div>
-        <h3 style="color: #0F172A; font-size: 16px; font-weight: 700; margin-bottom: 6px;">Zero Exceptions in Review Queue</h3>
-        <p style="font-size: 12px;">All ingested documents have passed 100% deterministic mathematical verification.</p>
+        <h3 style="color: #1F2328; font-size: 15px; font-weight: 600; margin-bottom: 6px;">All Invoices Reconciled</h3>
+        <p style="font-size: 12px;">Zero items in review queue. All mathematical checks passed.</p>
       </div>
     `;
     document.getElementById('bboxOverlay').innerHTML = '';
@@ -100,11 +96,11 @@ function renderReviewQueue() {
   const doc = queue[currentQueueIndex];
 
   document.getElementById('currentDocTitle').innerText = doc.filename;
-  document.getElementById('currentDocCategory').innerText = doc.category || 'Financial Invoice';
-  document.getElementById('currentDocStatusPill').innerText = doc.status.replace('_', ' ');
-  document.getElementById('currentDocStatusPill').className = `status-pill status-pill-${doc.status.toLowerCase().replace('_', '-')}`;
+  document.getElementById('currentDocCategory').innerText = doc.category || 'General';
+  document.getElementById('currentDocStatusTag').innerText = doc.status.replace('_', ' ');
+  document.getElementById('currentDocStatusTag').className = doc.status === 'APPROVED' ? 'status-tag tag-success' : 'status-tag tag-warning';
   document.getElementById('currentDocSha').innerText = `SHA: ${(doc.sha256 || 'a1b2c3d4e5f6').substring(0, 10)}...`;
-  document.getElementById('queuePager').innerText = `Item ${currentQueueIndex + 1} of ${queue.length}`;
+  document.getElementById('queuePager').innerText = `${currentQueueIndex + 1} of ${queue.length}`;
 
   renderDocumentPreview(doc);
   populateExtractionForm(doc);
@@ -116,47 +112,47 @@ function renderDocumentPreview(doc) {
   if (!data) return;
 
   const linesHtml = (data.lineItems || []).map((item, idx) => `
-    <tr style="border-bottom: 1px solid #E2E8F0;">
-      <td style="padding: 7px 0; color: #64748B; font-family: monospace;">${idx + 1}</td>
-      <td style="padding: 7px 8px; font-weight: 500;">${item.description}</td>
-      <td style="text-align: center; color: #334155;">${item.quantity}</td>
-      <td style="text-align: center; color: #94A3B8; font-size: 10px;">${item.unitOfMeasure || 'EA'}</td>
+    <tr style="border-bottom: 1px solid #E1E4E8;">
+      <td style="padding: 6px 0; color: #6A737D; font-family: monospace;">${idx + 1}</td>
+      <td style="padding: 6px 8px; font-weight: 500;">${item.description}</td>
+      <td style="text-align: center; color: #24292E;">${item.quantity}</td>
+      <td style="text-align: center; color: #6A737D; font-size: 10px;">${item.unitOfMeasure || 'EA'}</td>
       <td style="text-align: right; font-family: monospace;">$${item.unitPrice.toFixed(2)}</td>
-      <td style="text-align: right; font-weight: 700; font-family: monospace;">$${item.amount.toFixed(2)}</td>
+      <td style="text-align: right; font-weight: 600; font-family: monospace;">$${item.amount.toFixed(2)}</td>
     </tr>
   `).join('');
 
   const html = `
-    <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #0F172A; padding-bottom: 16px; margin-bottom: 20px;">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #24292E; padding-bottom: 14px; margin-bottom: 18px;">
       <div>
-        <h2 style="font-size: 20px; font-weight: 800; color: #0F172A; letter-spacing: -0.02em;">${data.vendorName?.value || 'COMMERCIAL INVOICE'}</h2>
-        <p style="color: #64748B; font-size: 11px; margin-top: 2px;">Tax / VAT Identification: <strong>${data.vendorTaxId?.value || 'US-88129044'}</strong></p>
+        <h2 style="font-size: 18px; font-weight: 700; color: #24292E;">${data.vendorName?.value || 'COMMERCIAL INVOICE'}</h2>
+        <p style="color: #586069; font-size: 11px; margin-top: 2px;">Tax ID / VAT: <strong>${data.vendorTaxId?.value || 'US-88129044'}</strong></p>
       </div>
       <div style="text-align: right;">
-        <span style="font-family: monospace; font-size: 11px; font-weight: 700; background: #F1F5F9; padding: 3px 8px; border-radius: 4px; color: #475569;">ORIGINAL BILLING</span>
+        <span style="font-family: monospace; font-size: 11px; font-weight: 600; background: #F6F8FA; padding: 2px 6px; border-radius: 3px; color: #586069; border: 1px solid #E1E4E8;">ORIGINAL</span>
       </div>
     </div>
 
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; font-size: 11.5px;">
-      <div style="background: #F8FAFC; padding: 12px; border-radius: 6px; border: 1px solid #E2E8F0;">
-        <strong style="color: #475569; font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em;">Billed Customer Entity:</strong><br>
-        <span style="font-weight: 600; font-size: 13px; color: #0F172A;">${data.customerName?.value || 'Global Freight & Logistics Corp.'}</span>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; font-size: 11.5px;">
+      <div style="background: #F6F8FA; padding: 10px; border-radius: 4px; border: 1px solid #E1E4E8;">
+        <span style="color: #586069; font-size: 10px; text-transform: uppercase; font-weight: 600;">Bill To:</span><br>
+        <span style="font-weight: 600; font-size: 12.5px; color: #24292E;">${data.customerName?.value || 'Global Freight & Logistics Corp.'}</span>
       </div>
-      <div style="background: #F8FAFC; padding: 12px; border-radius: 6px; border: 1px solid #E2E8F0; text-align: right;">
-        <div style="margin-bottom: 4px;">
-          <strong style="color: #64748B;">Invoice #:</strong> <span style="font-family: monospace; font-weight: 700; color: #0F172A;">${data.invoiceNumber?.value}</span>
+      <div style="background: #F6F8FA; padding: 10px; border-radius: 4px; border: 1px solid #E1E4E8; text-align: right;">
+        <div style="margin-bottom: 3px;">
+          <span style="color: #586069;">Invoice #:</span> <strong style="font-family: monospace; color: #24292E;">${data.invoiceNumber?.value}</strong>
         </div>
         <div>
-          <strong style="color: #64748B;">Date of Issue:</strong> <span style="font-family: monospace; color: #0F172A;">${data.invoiceDate?.value}</span>
+          <span style="color: #586069;">Date:</span> <span style="font-family: monospace; color: #24292E;">${data.invoiceDate?.value}</span>
         </div>
       </div>
     </div>
 
-    <table style="width: 100%; border-collapse: collapse; margin-bottom: 24px; font-size: 11px;">
+    <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 11px;">
       <thead>
-        <tr style="border-bottom: 2px solid #CBD5E1; text-align: left; color: #64748B;">
-          <th style="padding: 6px 0; width: 24px;">#</th>
-          <th style="padding: 6px 8px;">Description & Particulars</th>
+        <tr style="border-bottom: 1px solid #D1D5DA; text-align: left; color: #586069;">
+          <th style="padding: 4px 0; width: 20px;">#</th>
+          <th style="padding: 4px 8px;">Description</th>
           <th style="text-align: center; width: 40px;">Qty</th>
           <th style="text-align: center; width: 40px;">UOM</th>
           <th style="text-align: right; width: 70px;">Rate</th>
@@ -169,17 +165,17 @@ function renderDocumentPreview(doc) {
     </table>
 
     <div style="display: flex; justify-content: flex-end;">
-      <div style="width: 240px; border-top: 2px solid #0F172A; padding-top: 10px; font-size: 12px;">
-        <div style="display: flex; justify-content: space-between; margin-bottom: 4px; color: #475569;">
-          <span>Net Subtotal:</span>
+      <div style="width: 220px; border-top: 1px solid #24292E; padding-top: 8px; font-size: 11.5px;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 3px; color: #586069;">
+          <span>Subtotal:</span>
           <span style="font-family: monospace; font-weight: 600;">$${data.subtotal.toFixed(2)}</span>
         </div>
-        <div style="display: flex; justify-content: space-between; margin-bottom: 6px; color: #475569;">
-          <span>Tax Amount:</span>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 4px; color: #586069;">
+          <span>Tax:</span>
           <span style="font-family: monospace; font-weight: 600;">$${data.taxAmount.toFixed(2)}</span>
         </div>
-        <div style="display: flex; justify-content: space-between; border-top: 1px solid #CBD5E1; padding-top: 6px; font-size: 14px; font-weight: 800; color: #0F172A;">
-          <span>Total Balance Due:</span>
+        <div style="display: flex; justify-content: space-between; border-top: 1px solid #D1D5DA; padding-top: 4px; font-size: 13px; font-weight: 700; color: #24292E;">
+          <span>Total Balance:</span>
           <span style="font-family: monospace;">$${data.totalAmount.toFixed(2)}</span>
         </div>
       </div>
@@ -188,16 +184,15 @@ function renderDocumentPreview(doc) {
 
   document.getElementById('renderedDocText').innerHTML = html;
 
-  // Render SVG Vector Coordinate Rectangles with Click-to-Focus
   const svgLayer = document.getElementById('bboxOverlay');
   svgLayer.innerHTML = `
-    <rect id="bbox_vendorName" class="bbox-rect" x="65" y="65" width="400" height="55" rx="4" onclick="focusField('field_vendorName')" />
-    <rect id="bbox_invoiceNumber" class="bbox-rect" x="640" y="140" width="280" height="35" rx="4" onclick="focusField('field_invoiceNumber')" />
-    <rect id="bbox_invoiceDate" class="bbox-rect" x="640" y="180" width="280" height="35" rx="4" onclick="focusField('field_invoiceDate')" />
-    <rect id="bbox_customerName" class="bbox-rect" x="65" y="140" width="380" height="65" rx="4" onclick="focusField('field_customerName')" />
-    <rect id="bbox_subtotal" class="bbox-rect" x="650" y="470" width="270" height="28" rx="4" onclick="focusField('field_subtotal')" />
-    <rect id="bbox_taxAmount" class="bbox-rect" x="650" y="500" width="270" height="28" rx="4" onclick="focusField('field_taxAmount')" />
-    <rect id="bbox_totalAmount" class="bbox-rect error" x="650" y="535" width="270" height="38" rx="4" onclick="focusField('field_totalAmount')" />
+    <rect id="bbox_vendorName" class="bbox-rect" x="65" y="65" width="400" height="55" onclick="focusField('field_vendorName')" />
+    <rect id="bbox_invoiceNumber" class="bbox-rect" x="640" y="140" width="280" height="35" onclick="focusField('field_invoiceNumber')" />
+    <rect id="bbox_invoiceDate" class="bbox-rect" x="640" y="180" width="280" height="35" onclick="focusField('field_invoiceDate')" />
+    <rect id="bbox_customerName" class="bbox-rect" x="65" y="140" width="380" height="65" onclick="focusField('field_customerName')" />
+    <rect id="bbox_subtotal" class="bbox-rect" x="650" y="470" width="270" height="28" onclick="focusField('field_subtotal')" />
+    <rect id="bbox_taxAmount" class="bbox-rect" x="650" y="500" width="270" height="28" onclick="focusField('field_taxAmount')" />
+    <rect id="bbox_totalAmount" class="bbox-rect error" x="650" y="535" width="270" height="38" onclick="focusField('field_totalAmount')" />
   `;
 }
 
@@ -213,7 +208,6 @@ function populateExtractionForm(doc) {
   document.getElementById('field_taxAmount').value = data.taxAmount || 0;
   document.getElementById('field_totalAmount').value = data.totalAmount || 0;
 
-  // Vendor Master Hero
   const vendorName = data.vendorName?.value || 'Pacific Overland Logistics LLC';
   document.getElementById('vendorMatchedName').innerText = vendorName;
   document.getElementById('vendorAvatar').innerText = vendorName.substring(0, 2).toUpperCase();
@@ -221,17 +215,17 @@ function populateExtractionForm(doc) {
   const linesTbody = document.getElementById('lineItemsBody');
   linesTbody.innerHTML = (data.lineItems || []).map((item, idx) => `
     <tr>
-      <td style="color: #64748B; font-family: monospace;">${idx + 1}</td>
+      <td style="color: #6E7681; font-family: monospace;">${idx + 1}</td>
       <td><input type="text" value="${item.description}" id="line_desc_${idx}" oninput="revalidateForm()"></td>
       <td><input type="number" value="${item.quantity}" id="line_qty_${idx}" style="text-align: center;" oninput="recalculateLine(${idx})"></td>
-      <td><input type="text" value="${item.unitOfMeasure || 'EA'}" id="line_uom_${idx}" style="text-align: center; width: 45px;"></td>
+      <td><input type="text" value="${item.unitOfMeasure || 'EA'}" id="line_uom_${idx}" style="text-align: center; width: 40px;"></td>
       <td><input type="number" step="0.01" value="${item.unitPrice}" id="line_price_${idx}" style="text-align: right;" oninput="recalculateLine(${idx})"></td>
-      <td><input type="number" step="0.01" value="${item.amount}" id="line_amt_${idx}" style="text-align: right; font-weight: 700;" oninput="revalidateForm()"></td>
-      <td><button type="button" class="btn-icon-subtle" onclick="deleteLineItem(${idx})" title="Delete Line Item" style="color: #FB7185;">✕</button></td>
+      <td><input type="number" step="0.01" value="${item.amount}" id="line_amt_${idx}" style="text-align: right; font-weight: 600;" oninput="revalidateForm()"></td>
+      <td><button type="button" class="btn-icon" onclick="deleteLineItem(${idx})" title="Delete Line Item" style="color: #F85149;">✕</button></td>
     </tr>
   `).join('');
 
-  document.getElementById('lineItemsCount').innerText = `${data.lineItems?.length || 0} Items`;
+  document.getElementById('lineItemsCount').innerText = `${data.lineItems?.length || 0}`;
   revalidateForm();
 }
 
@@ -275,39 +269,26 @@ function revalidateForm() {
   const diff = Math.abs(expectedTotal - total);
 
   const banner = document.getElementById('discrepancyBanner');
-  const iconBubble = document.getElementById('discrepancyIcon');
   const title = document.getElementById('discrepancyTitle');
   const msg = document.getElementById('discrepancyMessage');
-  const eq = document.getElementById('discrepancyEquation');
   const repairBtn = document.getElementById('btnAutoRepair');
   const totalInput = document.getElementById('field_totalAmount');
-  const totalWrapper = document.getElementById('row_grandTotal')?.querySelector('.fin-input-wrapper');
   const totalBBox = document.getElementById('bbox_totalAmount');
 
   if (diff <= 0.01) {
-    banner.className = 'discrepancy-card card-success';
-    iconBubble.innerText = '✓';
-    title.innerText = 'All Deterministic Math Invariants Verified (100% Match)';
-    msg.innerText = `Subtotal ($${subtotal.toFixed(2)}) + Tax ($${tax.toFixed(2)}) equals Grand Total ($${total.toFixed(2)}). Ready for straight-through approval.`;
-    eq.innerHTML = `<code>Subtotal ($${subtotal.toFixed(2)}) + Tax ($${tax.toFixed(2)}) == Grand Total ($${total.toFixed(2)})</code>`;
+    banner.className = 'alert-banner alert-success';
+    title.innerText = 'Balance Verified';
+    msg.innerText = `Subtotal ($${subtotal.toFixed(2)}) + Tax ($${tax.toFixed(2)}) equals Total ($${total.toFixed(2)}).`;
     if (repairBtn) repairBtn.style.display = 'none';
     if (totalInput) totalInput.classList.remove('error');
-    if (totalWrapper) totalWrapper.classList.remove('error');
-    if (totalBBox) {
-      totalBBox.className.baseVal = 'bbox-rect active';
-    }
+    if (totalBBox) totalBBox.className.baseVal = 'bbox-rect active';
   } else {
-    banner.className = 'discrepancy-card card-warning';
-    iconBubble.innerText = '⚠️';
-    title.innerText = 'Mathematical Discrepancy Detected';
-    msg.innerText = `Subtotal ($${subtotal.toFixed(2)}) + Tax ($${tax.toFixed(2)}) = $${expectedTotal.toFixed(2)}, but Extracted Total is $${total.toFixed(2)} (Difference: $${diff.toFixed(2)}).`;
-    eq.innerHTML = `<code>Subtotal ($${subtotal.toFixed(2)}) + Tax ($${tax.toFixed(2)}) ≠ Extracted Total ($${total.toFixed(2)})</code>`;
+    banner.className = 'alert-banner alert-warning';
+    title.innerText = 'Balance Mismatch';
+    msg.innerText = `Line items sum to $${expectedTotal.toFixed(2)}, but invoice total is $${total.toFixed(2)} (difference: $${diff.toFixed(2)}).`;
     if (repairBtn) repairBtn.style.display = 'inline-block';
     if (totalInput) totalInput.classList.add('error');
-    if (totalWrapper) totalWrapper.classList.add('error');
-    if (totalBBox) {
-      totalBBox.className.baseVal = 'bbox-rect error';
-    }
+    if (totalBBox) totalBBox.className.baseVal = 'bbox-rect error';
   }
 }
 
@@ -335,7 +316,7 @@ function addNewLineItem() {
   doc.extractedData.lineItems = doc.extractedData.lineItems || [];
   doc.extractedData.lineItems.push({
     id: `item_${doc.extractedData.lineItems.length + 1}`,
-    description: 'New Freight Accessorial Surcharge',
+    description: 'Additional Charge',
     quantity: 1,
     unitOfMeasure: 'EA',
     unitPrice: 50.00,
@@ -373,7 +354,7 @@ async function submitReview(action) {
     const res = await fetch(`/api/documents/${doc.id}/review`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action, extractedData: updatedData, note: 'Reviewed via enterprise cockpit' })
+      body: JSON.stringify({ action, extractedData: updatedData, note: 'Approved via review queue' })
     });
     const result = await res.json();
     if (result.success) {
@@ -381,7 +362,7 @@ async function submitReview(action) {
       renderReviewQueue();
     }
   } catch (err) {
-    alert('Failed to submit review: ' + err.message);
+    alert('Failed to update review status: ' + err.message);
   }
 }
 
@@ -439,10 +420,6 @@ function setupKeyboardShortcuts() {
       e.preventDefault();
       prevQueueDoc();
     }
-    if (e.altKey && e.key.toLowerCase() === 'e') {
-      e.preventDefault();
-      openErpModal();
-    }
     if (e.key === 'Escape') {
       closeCommandPalette();
       closeErpModal();
@@ -458,15 +435,15 @@ function renderDocumentsTable() {
     const data = d.extractedData || {};
     return `
       <tr>
-        <td><span class="sha-hash-pill">${d.id}</span></td>
-        <td><strong style="color: #FFF;">${d.filename}</strong></td>
-        <td><span class="chip-sm">${d.documentType}</span></td>
+        <td style="font-family: monospace; color: #8B949E;">${d.id}</td>
+        <td><strong>${d.filename}</strong></td>
+        <td><span style="font-size: 11px; color: #8B949E;">${d.documentType}</span></td>
         <td>${data.vendorName?.value || 'N/A'}</td>
-        <td><span style="font-family: monospace; color: #94A3B8;">${data.invoiceDate?.value || 'N/A'}</span></td>
-        <td><strong style="font-family: monospace; color: #34D399;">$${(data.totalAmount || 0).toFixed(2)}</strong></td>
-        <td><span class="status-pill status-pill-${d.status.toLowerCase().replace('_', '-')}">${d.status.replace('_', ' ')}</span></td>
+        <td style="font-family: monospace; color: #8B949E;">${data.invoiceDate?.value || 'N/A'}</td>
+        <td style="text-align: right; font-family: monospace; font-weight: 600;">$${(data.totalAmount || 0).toFixed(2)}</td>
+        <td><span class="status-tag ${d.status === 'APPROVED' ? 'tag-success' : 'tag-warning'}">${d.status.replace('_', ' ')}</span></td>
         <td style="text-align: right;">
-          <button class="btn-glass" onclick="openDocInReview('${d.id}')" style="padding: 4px 10px; font-size: 11.5px;">Inspect</button>
+          <button class="btn btn-secondary btn-sm" onclick="openDocInReview('${d.id}')">Inspect</button>
         </td>
       </tr>
     `;
@@ -478,12 +455,12 @@ function renderVendorsTable() {
   if (!tbody) return;
   tbody.innerHTML = vendors.map(v => `
     <tr>
-      <td><span class="sha-hash-pill font-bold" style="color: #38BDF8;">${v.id}</span></td>
-      <td><strong style="color: #FFF;">${v.canonicalName}</strong></td>
-      <td><span style="font-family: monospace; color: #94A3B8;">${v.taxId}</span></td>
-      <td><span class="chip-sm" style="background: rgba(79, 70, 229, 0.15); color: #818CF8;">${v.defaultGlAccount}</span></td>
-      <td><span class="status-pill status-pill-success">${v.defaultPaymentTerms}</span></td>
-      <td style="font-size: 11.5px; color: #64748B;">${v.aliases.join(' • ')}</td>
+      <td style="font-family: monospace; color: #58A6FF;">${v.id}</td>
+      <td><strong>${v.canonicalName}</strong></td>
+      <td style="font-family: monospace;">${v.taxId}</td>
+      <td><span style="font-size: 11px; background: rgba(110,118,129,0.15); padding: 2px 6px; border-radius: 4px;">${v.defaultGlAccount}</span></td>
+      <td><span class="status-tag tag-success">${v.defaultPaymentTerms}</span></td>
+      <td style="font-size: 11.5px; color: #8B949E;">${v.aliases.join(' • ')}</td>
     </tr>
   `).join('');
 }
@@ -503,39 +480,39 @@ async function renderReports() {
     const data = await res.json();
 
     document.getElementById('metricsCards').innerHTML = `
-      <div class="kpi-card">
-        <span class="kpi-label">Documents Processed</span>
-        <div class="kpi-value">${data.totalDocuments}</div>
+      <div class="metric-card">
+        <span class="metric-label">Invoices Processed</span>
+        <div class="metric-value">${data.totalDocuments}</div>
       </div>
-      <div class="kpi-card">
-        <span class="kpi-label">Straight-Through Rate</span>
-        <div class="kpi-value" style="color: #34D399;">${Math.round((data.approvedCount / (data.totalDocuments || 1)) * 100)}%</div>
+      <div class="metric-card">
+        <span class="metric-label">Auto-Approval Rate</span>
+        <div class="metric-value" style="color: #3FB950;">${Math.round((data.approvedCount / (data.totalDocuments || 1)) * 100)}%</div>
       </div>
-      <div class="kpi-card">
-        <span class="kpi-label">Reconciled Spend Volume</span>
-        <div class="kpi-value" style="font-family: monospace; font-size: 22px;">$${data.totalSpend.toFixed(2)}</div>
+      <div class="metric-card">
+        <span class="metric-label">Total Spend</span>
+        <div class="metric-value" style="font-family: monospace;">$${data.totalSpend.toFixed(2)}</div>
       </div>
-      <div class="kpi-card">
-        <span class="kpi-label">Cumulative Tax Liability</span>
-        <div class="kpi-value" style="font-family: monospace; font-size: 22px; color: #FCD34D;">$${data.totalTax.toFixed(2)}</div>
+      <div class="metric-card">
+        <span class="metric-label">Total Tax</span>
+        <div class="metric-value" style="font-family: monospace; color: #D29922;">$${data.totalTax.toFixed(2)}</div>
       </div>
     `;
 
     document.getElementById('topVendorsList').innerHTML = data.topVendors.map(v => `
-      <div class="report-row-item">
+      <div class="report-row">
         <span>${v.name}</span>
         <strong>$${v.total.toFixed(2)}</strong>
       </div>
     `).join('');
 
     document.getElementById('categoryList').innerHTML = data.categoryBreakdown.map(c => `
-      <div class="report-row-item">
+      <div class="report-row">
         <span>${c.category}</span>
         <strong>$${c.total.toFixed(2)}</strong>
       </div>
     `).join('');
   } catch (err) {
-    console.error('Failed to render reports:', err);
+    console.error('Failed rendering reports:', err);
   }
 }
 
@@ -544,11 +521,11 @@ function renderAuditTimeline(doc) {
   if (!container) return;
   const trail = doc.auditTrail || [];
   container.innerHTML = trail.map(t => `
-    <div class="timeline-item">
-      <div class="timeline-dot"></div>
-      <span class="timeline-time">${new Date(t.timestamp).toLocaleTimeString()}</span>
-      <div class="timeline-title">${t.action} • ${t.actor}</div>
-      <div class="timeline-note">${t.note}</div>
+    <div class="timeline-entry">
+      <div class="timeline-marker"></div>
+      <span class="timeline-timestamp">${new Date(t.timestamp).toLocaleTimeString()}</span>
+      <div class="timeline-event">${t.action} (${t.actor})</div>
+      <div class="timeline-detail">${t.note}</div>
     </div>
   `).join('');
 }
@@ -584,7 +561,6 @@ async function handleFileUpload(e) {
   }
 
   await fetchDocuments();
-  alert(`Successfully ingested and verified ${files.length} document(s)!`);
 }
 
 function handleSearch() {
@@ -612,7 +588,7 @@ function closeErpModal() {
 
 async function switchErpTab(erpName) {
   currentErpTab = erpName;
-  document.querySelectorAll('.erp-tab-btn').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.erp-tab').forEach(t => t.classList.remove('active'));
   event.target.classList.add('active');
   await loadErpPayload(erpName);
 }
@@ -625,7 +601,7 @@ async function loadErpPayload(erpName) {
     const data = await res.json();
     document.getElementById('erpJsonCode').innerText = JSON.stringify(data, null, 2);
   } catch (err) {
-    document.getElementById('erpJsonCode').innerText = `Error loading ERP schema: ${err.message}`;
+    document.getElementById('erpJsonCode').innerText = `Error: ${err.message}`;
   }
 }
 
@@ -634,10 +610,10 @@ function copyErpJson() {
   navigator.clipboard.writeText(text);
   const copyBtn = document.getElementById('copyBtnText');
   copyBtn.innerText = 'Copied!';
-  setTimeout(() => copyBtn.innerText = 'Copy Payload', 2000);
+  setTimeout(() => copyBtn.innerText = 'Copy to Clipboard', 2000);
 }
 
-// Command Palette (Cmd+K)
+// Command Palette (Ctrl+K)
 function openCommandPalette() {
   document.getElementById('commandPaletteModal').style.display = 'flex';
   setTimeout(() => document.getElementById('paletteSearch').focus(), 50);
@@ -655,7 +631,7 @@ function handlePaletteBackdrop(e) {
 
 function handlePaletteInput() {
   const q = document.getElementById('paletteSearch').value.toLowerCase();
-  const items = document.querySelectorAll('.palette-item');
+  const items = document.querySelectorAll('.palette-row');
   items.forEach(it => {
     const text = it.innerText.toLowerCase();
     it.style.display = text.includes(q) ? 'flex' : 'none';
