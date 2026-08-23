@@ -1,288 +1,576 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document Intelligence Platform — Enterprise Cockpit</title>
+  <title>DocIntel // Enterprise Document Intelligence & Financial Reconciliation</title>
   <link rel="stylesheet" href="/style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <!-- Top Navigation Header -->
+  <!-- Ambient Background Lighting -->
+  <div class="ambient-glow ambient-top-left"></div>
+  <div class="ambient-glow ambient-top-right"></div>
+
+  <!-- TOP ENTERPRISE APP HEADER -->
   <header class="app-header">
-    <div class="header-brand">
-      <div class="brand-logo">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <div class="header-left">
+      <div class="brand-cluster">
+        <div class="brand-icon-shield">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+            <polyline points="2 17 12 22 22 17"></polyline>
+            <polyline points="2 12 12 17 22 12"></polyline>
+          </svg>
+        </div>
+        <div class="brand-title-group">
+          <div class="brand-name-row">
+            <span class="brand-name">DocIntel</span>
+            <span class="version-tag">ENTERPRISE v3.4</span>
+            <span class="env-pill">PROD-SYNC</span>
+          </div>
+          <span class="brand-subtext">Autonomous Multimodal Extraction & Financial Invariant Engine</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CENTER NAVIGATION TABS -->
+    <nav class="center-nav">
+      <button class="nav-btn active" id="tabReview" onclick="switchView('review')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
           <polyline points="14 2 14 8 20 8"></polyline>
           <line x1="16" y1="13" x2="8" y2="13"></line>
           <line x1="16" y1="17" x2="8" y2="17"></line>
-          <polyline points="10 9 9 9 8 9"></polyline>
         </svg>
-      </div>
-      <div class="brand-text">
-        <h1>Document Intelligence</h1>
-        <span class="brand-badge">Session 03 • Enterprise Edition</span>
-      </div>
-    </div>
+        <span>Review Queue</span>
+        <span class="counter-badge counter-warning" id="queueCountBadge">1</span>
+      </button>
 
-    <!-- Navigation Tabs -->
-    <nav class="nav-tabs">
-      <button class="nav-tab active" id="tabReview" onclick="switchView('review')">
-        <span class="tab-label">Review Queue</span>
-        <span class="badge badge-warning" id="queueCountBadge">1</span>
+      <button class="nav-btn" id="tabDocuments" onclick="switchView('documents')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="3" y1="9" x2="21" y2="9"></line>
+          <line x1="9" y1="21" x2="9" y2="9"></line>
+        </svg>
+        <span>All Documents</span>
+        <span class="counter-badge" id="totalCountBadge">2</span>
       </button>
-      <button class="nav-tab" id="tabDocuments" onclick="switchView('documents')">
-        <span class="tab-label">All Documents</span>
-        <span class="badge badge-neutral" id="totalCountBadge">2</span>
+
+      <button class="nav-btn" id="tabVendors" onclick="switchView('vendors')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+        <span>Vendor Master</span>
+        <span class="counter-badge counter-success" id="vendorMasterBadge">4</span>
       </button>
-      <button class="nav-tab" id="tabVendors" onclick="switchView('vendors')">
-        <span class="tab-label">Vendor Master</span>
-      </button>
-      <button class="nav-tab" id="tabReports" onclick="switchView('reports')">
-        <span class="tab-label">Analytics & Reports</span>
+
+      <button class="nav-btn" id="tabReports" onclick="switchView('reports')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="20" x2="18" y2="10"></line>
+          <line x1="12" y1="20" x2="12" y2="4"></line>
+          <line x1="6" y1="20" x2="6" y2="14"></line>
+        </svg>
+        <span>Spend Analytics</span>
       </button>
     </nav>
 
-    <!-- Header Actions -->
-    <div class="header-actions">
-      <button class="btn btn-secondary" onclick="openErpModal()" title="View ERP Export Schemas">
+    <!-- RIGHT CONTROL ACTIONS -->
+    <div class="header-right">
+      <button class="btn-kbd-search" onclick="openCommandPalette()" title="Press Cmd+K / Ctrl+K">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <span>Quick Jump</span>
+        <kbd>⌘K</kbd>
+      </button>
+
+      <button class="btn-glass" onclick="openErpModal()" title="View Synchronized ERP Payload">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <polyline points="16 18 22 12 16 6"></polyline>
           <polyline points="8 6 2 12 8 18"></polyline>
         </svg>
         <span>ERP Payload</span>
       </button>
-      <label class="btn btn-primary" for="fileUploadInput">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+      <label class="btn-primary-gradient" for="fileUploadInput">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
           <polyline points="17 8 12 3 7 8"></polyline>
           <line x1="12" y1="3" x2="12" y2="15"></line>
         </svg>
-        <span>Upload Document</span>
+        <span>Ingest Document</span>
       </label>
       <input type="file" id="fileUploadInput" style="display: none;" onchange="handleFileUpload(event)" accept=".pdf,.png,.jpg,.jpeg,.csv,.xml" multiple>
     </div>
   </header>
 
-  <!-- Main Application Body -->
-  <main class="app-main">
-    <!-- VIEW 1: Dual-Pane Review Queue (Default) -->
-    <section class="view-section active" id="viewReview">
-      <div class="review-toolbar">
-        <div class="doc-info">
-          <span class="doc-title" id="currentDocTitle">Pacific_Freight_BOL_77201.pdf</span>
-          <span class="status-tag status-review" id="currentDocStatus">REVIEW REQUIRED</span>
+  <!-- MAIN VIEWPORT CONTAINER -->
+  <main class="main-viewport">
+
+    <!-- VIEW 1: DUAL-PANE COCKPIT (HUMAN-IN-THE-LOOP TRIAGE) -->
+    <section class="view-panel active" id="viewReview">
+      <!-- COCKPIT CONTROL BAR -->
+      <div class="cockpit-bar">
+        <div class="cockpit-bar-left">
+          <div class="doc-status-indicator pulse-amber" id="statusPulseDot"></div>
+          <div class="doc-breadcrumb">
+            <span class="crumb-category" id="currentDocCategory">Logistics & Freight</span>
+            <span class="crumb-separator">/</span>
+            <span class="crumb-title" id="currentDocTitle">Pacific_Freight_BOL_77201.pdf</span>
+          </div>
+          <span class="status-pill status-pill-warning" id="currentDocStatusPill">REVIEW REQUIRED</span>
+          <span class="sha-hash-pill" id="currentDocSha" title="SHA-256 Content Hash">SHA: b2c3d4e5f6...</span>
         </div>
-        <div class="queue-navigation">
-          <button class="btn btn-secondary btn-sm" onclick="prevQueueDoc()" title="Previous (Alt+P)">Prev</button>
-          <span class="queue-pager" id="queuePager">Item 1 of 1</span>
-          <button class="btn btn-secondary btn-sm" onclick="nextQueueDoc()" title="Next (Alt+N)">Next</button>
+
+        <div class="cockpit-bar-right">
+          <div class="queue-navigator">
+            <button class="btn-icon-subtle" onclick="prevQueueDoc()" title="Previous Item (Alt+P)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg>
+            </button>
+            <span class="pager-counter" id="queuePager">Item 1 of 1</span>
+            <button class="btn-icon-subtle" onclick="nextQueueDoc()" title="Next Item (Alt+N)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </button>
+          </div>
+          <div class="bar-divider"></div>
+          <button class="btn-icon-subtle" onclick="toggleAuditTimeline()" title="Audit Lineage Trail">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+          </button>
         </div>
       </div>
 
-      <!-- Split Dual-Pane Container -->
-      <div class="split-pane-container">
-        <!-- LEFT PANE: Document Previewer with Interactive Bounding Box Overlay -->
-        <div class="pane pane-left">
-          <div class="pane-header">
-            <h3>Document Preview & Spatial Provenance</h3>
-            <div class="viewer-controls">
-              <button class="btn-icon" onclick="zoomDoc(1.1)" title="Zoom In">+</button>
-              <button class="btn-icon" onclick="zoomDoc(0.9)" title="Zoom Out">-</button>
-              <button class="btn-icon" onclick="resetZoom()" title="Reset Zoom">100%</button>
+      <!-- DUAL-PANE WORKSPACE -->
+      <div class="dual-workspace">
+        
+        <!-- LEFT PANE: HIGH-DPI DOCUMENT CANVAS & INTERACTIVE SVG PROVENANCE OVERLAY -->
+        <div class="pane pane-document">
+          <div class="pane-sub-header">
+            <div class="header-tag-group">
+              <span class="tag-title">RAW SOURCE PROVENANCE</span>
+              <span class="tag-chip">NATIVE AST STREAM</span>
+            </div>
+            <div class="zoom-toolbar">
+              <button class="btn-tool" onclick="zoomDoc(0.9)" title="Zoom Out">-</button>
+              <span class="zoom-indicator" id="zoomPercentage">100%</span>
+              <button class="btn-tool" onclick="zoomDoc(1.1)" title="Zoom In">+</button>
+              <button class="btn-tool" onclick="resetZoom()" title="Reset Zoom">Fit</button>
+              <button class="btn-tool" onclick="rotateDoc()" title="Rotate 90°">⟳</button>
             </div>
           </div>
-          <div class="document-viewport" id="docViewport">
-            <div class="document-sheet" id="docSheet">
-              <div class="rendered-doc-content" id="renderedDocText"></div>
-              <svg class="bbox-overlay-layer" id="bboxOverlay" viewBox="0 0 1000 1400" preserveAspectRatio="none"></svg>
+
+          <!-- DOCUMENT VIEWPORT CONTAINER -->
+          <div class="doc-canvas-viewport" id="docViewport">
+            <div class="document-sheet-container" id="docSheet">
+              <div class="sheet-paper" id="renderedDocText">
+                <!-- Dynamic Invoice Canvas Text Content Injected by app.js -->
+              </div>
+              <!-- Glowing Vector Spatial Bounding-Box Overlay -->
+              <svg class="spatial-bbox-layer" id="bboxOverlay" viewBox="0 0 1000 1400" preserveAspectRatio="none">
+                <!-- SVG coordinate rectangles dynamically mapped -->
+              </svg>
             </div>
           </div>
         </div>
 
-        <!-- RIGHT PANE: Structured Data Extraction Form & Arithmetic Validation -->
-        <div class="pane pane-right">
-          <div class="pane-header">
-            <h3>Structured Extraction & Verification</h3>
-            <span class="confidence-indicator" id="overallConfidenceBadge">Confidence: 93.4%</span>
+        <!-- RIGHT PANE: DETERMINISTIC VERIFICATION & FIELD RECONCILIATION -->
+        <div class="pane pane-form">
+          <div class="pane-sub-header">
+            <div class="header-tag-group">
+              <span class="tag-title">STRUCTURED EXTRACTION & VALIDATION</span>
+            </div>
+            <div class="conf-meter-group">
+              <span class="conf-label">Confidence:</span>
+              <span class="conf-score-value" id="overallConfidenceScore">93.4%</span>
+              <div class="conf-progress-bar">
+                <div class="conf-fill" id="overallConfidenceFill" style="width: 93.4%;"></div>
+              </div>
+            </div>
           </div>
 
-          <div class="form-scrollable">
-            <!-- Real-time Discrepancy Banner -->
-            <div class="discrepancy-banner banner-error" id="discrepancyBanner">
-              <div class="banner-icon">⚠️</div>
-              <div class="banner-content">
-                <h4 id="discrepancyTitle">Mathematical Discrepancy Detected</h4>
-                <p id="discrepancyMessage">Subtotal ($1,568.00) + Tax ($0.00) = $1,568.00, but Total is $1,650.00.</p>
+          <div class="form-container-scrollable">
+            <!-- REAL-TIME DETERMINISTIC ARITHMETIC DISCREPANCY CARD -->
+            <div class="discrepancy-card card-warning" id="discrepancyBanner">
+              <div class="disc-icon-bubble" id="discrepancyIcon">⚠️</div>
+              <div class="disc-details">
+                <div class="disc-header-row">
+                  <h4 class="disc-title" id="discrepancyTitle">Mathematical Invariant Discrepancy</h4>
+                  <button class="btn-repair-chip" id="btnAutoRepair" onclick="autoRepairMath()" title="Apply deterministic arithmetic reconciliation">
+                    ⚡ Auto-Reconcile
+                  </button>
+                </div>
+                <p class="disc-msg" id="discrepancyMessage">
+                  Subtotal ($1,568.00) + Tax ($0.00) = $1,568.00, but Extracted Total is $1,650.00 (Difference: $82.00).
+                </p>
+                <div class="disc-math-trail" id="discrepancyEquation">
+                  <code>Subtotal ($1,568.00) + Tax ($0.00) - Discount ($0.00) ≠ Total ($1,650.00)</code>
+                </div>
               </div>
             </div>
 
-            <!-- Form Fields Section -->
+            <!-- VENDOR MASTER RESOLUTION HERO CARD -->
+            <div class="vendor-match-hero" id="vendorMasterHero">
+              <div class="vendor-avatar" id="vendorAvatar">PO</div>
+              <div class="vendor-meta">
+                <div class="vendor-title-row">
+                  <h4 id="vendorMatchedName">Pacific Overland Logistics LLC</h4>
+                  <span class="vendor-verified-pill" id="vendorMatchStatus">✓ VERIFIED MASTER</span>
+                </div>
+                <div class="vendor-gl-chips">
+                  <span class="gl-chip">GL: <strong id="vendorGlAccount">6020 - Freight & Delivery</strong></span>
+                  <span class="gl-chip">Terms: <strong id="vendorTerms">NET15</strong></span>
+                  <span class="gl-chip">Tax ID: <strong id="vendorTaxIdVal">US-88129044</strong></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- STRUCTURED DATA FORM -->
             <form id="reviewForm" onsubmit="event.preventDefault(); submitReview('APPROVE');">
-              <div class="form-grid-2">
-                <div class="form-group" id="group_invoiceNumber">
-                  <label>Invoice / BOL # <span class="field-conf">94%</span></label>
-                  <input type="text" id="field_invoiceNumber" onfocus="highlightBBox('invoiceNumber')" oninput="revalidateForm()">
+              
+              <!-- GRID: HEADER ENTITIES -->
+              <div class="form-row-2">
+                <div class="input-card" id="card_invoiceNumber">
+                  <div class="input-header">
+                    <label>INVOICE / BOL #</label>
+                    <span class="conf-badge-pill">94%</span>
+                  </div>
+                  <div class="input-shell">
+                    <input type="text" id="field_invoiceNumber" onfocus="highlightBBox('invoiceNumber')" oninput="revalidateForm()">
+                  </div>
                 </div>
-                <div class="form-group" id="group_invoiceDate">
-                  <label>Document Date <span class="field-conf">92%</span></label>
-                  <input type="date" id="field_invoiceDate" onfocus="highlightBBox('invoiceDate')" oninput="revalidateForm()">
+
+                <div class="input-card" id="card_invoiceDate">
+                  <div class="input-header">
+                    <label>DOCUMENT DATE</label>
+                    <span class="conf-badge-pill">92%</span>
+                  </div>
+                  <div class="input-shell">
+                    <input type="date" id="field_invoiceDate" onfocus="highlightBBox('invoiceDate')" oninput="revalidateForm()">
+                  </div>
                 </div>
               </div>
 
-              <div class="form-group" id="group_vendorName">
-                <label>Vendor / Carrier <span class="field-conf" id="vendorMatchBadge">Matched: Pacific Overland</span></label>
-                <input type="text" id="field_vendorName" onfocus="highlightBBox('vendorName')" oninput="revalidateForm()">
-              </div>
-
-              <div class="form-group" id="group_customerName">
-                <label>Customer / Billed To <span class="field-conf">90%</span></label>
-                <input type="text" id="field_customerName" onfocus="highlightBBox('customerName')" oninput="revalidateForm()">
-              </div>
-
-              <!-- Line Items Table -->
-              <div class="line-items-section">
-                <div class="section-title">
-                  <h4>Line Items & Charges</h4>
-                  <span class="badge badge-neutral" id="lineItemsCount">2 Items</span>
+              <!-- VENDOR & CUSTOMER -->
+              <div class="input-card" id="card_vendorName">
+                <div class="input-header">
+                  <label>SUPPLIER / VENDOR NAME</label>
+                  <span class="conf-badge-pill" id="vendorConfidenceTag">95% Conf</span>
                 </div>
-                <table class="line-items-table">
-                  <thead>
-                    <tr>
-                      <th>Description</th>
-                      <th style="width: 50px;">Qty</th>
-                      <th style="width: 50px;">UOM</th>
-                      <th style="width: 80px;">Price</th>
-                      <th style="width: 90px;">Total</th>
-                    </tr>
-                  </thead>
-                  <tbody id="lineItemsBody"></tbody>
-                </table>
-              </div>
-
-              <!-- Financial Summary Calculations -->
-              <div class="financials-summary">
-                <div class="calc-row">
-                  <span>Subtotal:</span>
-                  <input type="number" step="0.01" id="field_subtotal" onfocus="highlightBBox('subtotal')" oninput="revalidateForm()" class="font-mono">
-                </div>
-                <div class="calc-row">
-                  <span>Tax Amount:</span>
-                  <input type="number" step="0.01" id="field_taxAmount" onfocus="highlightBBox('taxAmount')" oninput="revalidateForm()" class="font-mono">
-                </div>
-                <div class="calc-row font-bold total-row" id="row_total">
-                  <span>Grand Total ($):</span>
-                  <input type="number" step="0.01" id="field_totalAmount" onfocus="highlightBBox('totalAmount')" oninput="revalidateForm()" class="font-mono input-total">
+                <div class="input-shell">
+                  <input type="text" id="field_vendorName" onfocus="highlightBBox('vendorName')" oninput="revalidateForm()">
                 </div>
               </div>
 
-              <!-- Action Bar -->
-              <div class="review-actions">
-                <button type="button" class="btn btn-danger" onclick="submitReview('REJECT')">
-                  Reject (Alt+R)
+              <div class="input-card" id="card_customerName">
+                <div class="input-header">
+                  <label>BILLED CUSTOMER ENTITY</label>
+                  <span class="conf-badge-pill">90%</span>
+                </div>
+                <div class="input-shell">
+                  <input type="text" id="field_customerName" onfocus="highlightBBox('customerName')" oninput="revalidateForm()">
+                </div>
+              </div>
+
+              <!-- LINE ITEMS FINANCIAL DATA TABLE -->
+              <div class="line-items-block">
+                <div class="block-header">
+                  <div class="block-title-group">
+                    <h4>Line Item Extraction & Accessorial Charges</h4>
+                    <span class="counter-badge counter-neutral" id="lineItemsCount">2 Items</span>
+                  </div>
+                  <button type="button" class="btn-xs-glass" onclick="addNewLineItem()">+ Add Item</button>
+                </div>
+
+                <div class="table-card-wrapper">
+                  <table class="grid-table">
+                    <thead>
+                      <tr>
+                        <th style="width: 32px;">#</th>
+                        <th>Description</th>
+                        <th style="width: 60px; text-align: center;">Qty</th>
+                        <th style="width: 55px; text-align: center;">UOM</th>
+                        <th style="width: 90px; text-align: right;">Unit Price</th>
+                        <th style="width: 100px; text-align: right;">Total ($)</th>
+                        <th style="width: 35px;"></th>
+                      </tr>
+                    </thead>
+                    <tbody id="lineItemsBody"></tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- FINANCIAL TOTALS RECONCILIATION SUMMARY -->
+              <div class="financials-card">
+                <div class="fin-row">
+                  <span class="fin-label">Line Items Subtotal:</span>
+                  <div class="fin-input-wrapper">
+                    <span class="currency-prefix">$</span>
+                    <input type="number" step="0.01" id="field_subtotal" onfocus="highlightBBox('subtotal')" oninput="revalidateForm()" class="font-mono">
+                  </div>
+                </div>
+
+                <div class="fin-row">
+                  <span class="fin-label">Tax Liability (<span id="taxRateLabel">0.0%</span>):</span>
+                  <div class="fin-input-wrapper">
+                    <span class="currency-prefix">$</span>
+                    <input type="number" step="0.01" id="field_taxAmount" onfocus="highlightBBox('taxAmount')" oninput="revalidateForm()" class="font-mono">
+                  </div>
+                </div>
+
+                <div class="fin-row fin-total-row" id="row_grandTotal">
+                  <div class="total-label-group">
+                    <span class="fin-total-label">Grand Total Verified:</span>
+                    <span class="fin-total-subtext">Deterministic Arithmetic Ledger</span>
+                  </div>
+                  <div class="fin-input-wrapper total-wrapper">
+                    <span class="currency-prefix total-prefix">$</span>
+                    <input type="number" step="0.01" id="field_totalAmount" onfocus="highlightBBox('totalAmount')" oninput="revalidateForm()" class="font-mono font-bold total-input">
+                  </div>
+                </div>
+              </div>
+
+              <!-- BOTTOM WORKFLOW ACTION BAR -->
+              <div class="action-footer">
+                <button type="button" class="btn-danger-outline" onclick="submitReview('REJECT')">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                  <span>Reject (Alt+R)</span>
                 </button>
-                <button type="submit" class="btn btn-success btn-lg" id="btnApprove">
-                  Approve & Next (Alt+A)
-                </button>
+
+                <div class="action-footer-right">
+                  <button type="button" class="btn-secondary-glass" onclick="openErpModal()">
+                    <span>Preview ERP</span>
+                  </button>
+                  <button type="submit" class="btn-approve-gradient" id="btnApprove">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    <span>Approve & Next (Alt+A)</span>
+                  </button>
+                </div>
               </div>
+
             </form>
           </div>
         </div>
+
       </div>
     </section>
 
-    <!-- VIEW 2: All Documents Table -->
-    <section class="view-section" id="viewDocuments">
-      <div class="section-header">
-        <h2>Document Ingestion & Extraction Ledger</h2>
-        <div class="search-bar">
-          <input type="text" id="searchInput" placeholder="Search by vendor, invoice #, status..." oninput="handleSearch()">
-          <button class="btn btn-secondary" onclick="exportData('csv')">Export CSV</button>
+    <!-- VIEW 2: ALL DOCUMENTS LEDGER -->
+    <section class="view-panel" id="viewDocuments">
+      <div class="panel-inner-container">
+        <div class="panel-hero-row">
+          <div>
+            <h2>Document Ingestion & Processing Ledger</h2>
+            <p class="panel-subtitle">Audited document repository with cryptographic content addressing and immutable line-item lineage.</p>
+          </div>
+          <div class="ledger-actions-row">
+            <div class="search-input-shell">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+              <input type="text" id="searchInput" placeholder="Filter by supplier, invoice #, status..." oninput="handleSearch()">
+            </div>
+            <button class="btn-glass" onclick="exportData('csv')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              <span>Export CSV</span>
+            </button>
+          </div>
         </div>
-      </div>
-      <div class="table-container">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>Document ID</th>
-              <th>Filename</th>
-              <th>Type</th>
-              <th>Vendor / Carrier</th>
-              <th>Date</th>
-              <th>Total Amount</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody id="documentsTableBody"></tbody>
-        </table>
+
+        <div class="glass-table-card">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>DOC ID</th>
+                <th>FILENAME</th>
+                <th>TYPE</th>
+                <th>SUPPLIER / CARRIER</th>
+                <th>INVOICE DATE</th>
+                <th>TOTAL AMOUNT</th>
+                <th>VALIDATION STATUS</th>
+                <th style="text-align: right;">ACTION</th>
+              </tr>
+            </thead>
+            <tbody id="documentsTableBody"></tbody>
+          </table>
+        </div>
       </div>
     </section>
 
-    <!-- VIEW 3: Vendor Master Catalog -->
-    <section class="view-section" id="viewVendors">
-      <div class="section-header">
-        <h2>Enterprise Vendor Master Catalog & GL Codes</h2>
-        <span class="badge badge-neutral" id="vendorMasterCount">4 Verified Vendors</span>
-      </div>
-      <div class="table-container">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>Vendor ID</th>
-              <th>Canonical Name</th>
-              <th>Tax ID / VAT</th>
-              <th>Default GL Account</th>
-              <th>Payment Terms</th>
-              <th>Aliases</th>
-            </tr>
-          </thead>
-          <tbody id="vendorsTableBody"></tbody>
-        </table>
+    <!-- VIEW 3: VENDOR MASTER CATALOG -->
+    <section class="view-panel" id="viewVendors">
+      <div class="panel-inner-container">
+        <div class="panel-hero-row">
+          <div>
+            <h2>Canonical Vendor Master & GL Account Mapping</h2>
+            <p class="panel-subtitle">Automated fuzzy supplier matching with tax ID reconciliation and default ERP general ledger codes.</p>
+          </div>
+          <button class="btn-primary-gradient" onclick="alert('Vendor Master API supports dynamic sync via /api/vendors')">
+            <span>+ Add Vendor Master</span>
+          </button>
+        </div>
+
+        <div class="glass-table-card">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>MASTER ID</th>
+                <th>CANONICAL LEGAL ENTITY</th>
+                <th>TAX ID / VAT</th>
+                <th>DEFAULT GL ACCOUNT</th>
+                <th>PAYMENT TERMS</th>
+                <th>REGISTERED ALIASES</th>
+              </tr>
+            </thead>
+            <tbody id="vendorsTableBody"></tbody>
+          </table>
+        </div>
       </div>
     </section>
 
-    <!-- VIEW 4: Analytics & Reports -->
-    <section class="view-section" id="viewReports">
-      <div class="section-header">
-        <h2>Operational Spend Analytics & Reconciliation Report</h2>
-      </div>
-      <div class="metrics-grid" id="metricsCards"></div>
-      <div class="reports-split">
-        <div class="report-card">
-          <h3>Top Vendors by Spend</h3>
-          <div id="topVendorsList" class="report-list"></div>
+    <!-- VIEW 4: SPEND ANALYTICS & RECONCILIATION -->
+    <section class="view-panel" id="viewReports">
+      <div class="panel-inner-container">
+        <div class="panel-hero-row">
+          <div>
+            <h2>Financial Spend Analytics & Audit Telemetry</h2>
+            <p class="panel-subtitle">Real-time straight-through processing rates, tax liabilities, and vendor distribution analytics.</p>
+          </div>
         </div>
-        <div class="report-card">
-          <h3>Spend by Category</h3>
-          <div id="categoryList" class="report-list"></div>
+
+        <div class="kpi-grid" id="metricsCards">
+          <!-- Dynamically populated KPI cards -->
+        </div>
+
+        <div class="analytics-split-row">
+          <div class="glass-report-card">
+            <div class="report-card-head">
+              <h3>Top Suppliers by Spend Volume</h3>
+              <span class="chip-sm">AUDIT VERIFIED</span>
+            </div>
+            <div id="topVendorsList" class="report-list-container"></div>
+          </div>
+
+          <div class="glass-report-card">
+            <div class="report-card-head">
+              <h3>General Ledger Category Breakdown</h3>
+              <span class="chip-sm">GAAP COMPLIANT</span>
+            </div>
+            <div id="categoryList" class="report-list-container"></div>
+          </div>
         </div>
       </div>
     </section>
+
   </main>
 
-  <!-- ERP Payload Modal Drawer -->
+  <!-- MODAL 1: ENTERPRISE ERP EXPORT PAYLOAD DRAWER -->
   <div class="modal-backdrop" id="erpModal" style="display: none;">
-    <div class="modal-content">
+    <div class="modal-card">
       <div class="modal-header">
-        <h3>Enterprise ERP Export Preview</h3>
-        <button class="btn-icon" onclick="closeErpModal()">✕</button>
+        <div class="modal-title-group">
+          <div class="modal-icon-badge">⚡</div>
+          <div>
+            <h3>Enterprise ERP Payload Synchronizer</h3>
+            <span class="modal-sub">Real-time generated JSON/XML payload for target enterprise ledger.</span>
+          </div>
+        </div>
+        <button class="btn-close" onclick="closeErpModal()">✕</button>
       </div>
-      <div class="modal-nav">
-        <button class="modal-tab active" onclick="switchErpTab('quickbooks')">QuickBooks Online</button>
-        <button class="modal-tab" onclick="switchErpTab('xero')">Xero API</button>
-        <button class="modal-tab" onclick="switchErpTab('netsuite')">NetSuite SuiteTalk</button>
-        <button class="modal-tab" onclick="switchErpTab('sap')">SAP S/4HANA</button>
+
+      <div class="modal-tabs-bar">
+        <button class="erp-tab-btn active" onclick="switchErpTab('quickbooks')">QuickBooks Online</button>
+        <button class="erp-tab-btn" onclick="switchErpTab('xero')">Xero API</button>
+        <button class="erp-tab-btn" onclick="switchErpTab('netsuite')">Oracle NetSuite</button>
+        <button class="erp-tab-btn" onclick="switchErpTab('sap')">SAP S/4HANA (BAPI)</button>
       </div>
-      <div class="modal-body">
-        <pre class="code-box" id="erpJsonCode">Loading ERP Payload...</pre>
+
+      <div class="modal-code-viewport">
+        <pre class="syntax-code-box" id="erpJsonCode">Loading ERP payload...</pre>
       </div>
+
       <div class="modal-footer">
-        <button class="btn btn-secondary" onclick="copyErpJson()">Copy JSON</button>
-        <button class="btn btn-primary" onclick="closeErpModal()">Close</button>
+        <span class="payload-stat" id="payloadStat">Format: Validated JSON Schema • Ready for ERP Dispatch</span>
+        <div class="footer-btn-group">
+          <button class="btn-secondary-glass" onclick="copyErpJson()" id="btnCopyJson">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            <span id="copyBtnText">Copy Payload</span>
+          </button>
+          <button class="btn-primary-gradient" onclick="closeErpModal()">Done</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 2: COMMAND PALETTE (CMD+K / CTRL+K) -->
+  <div class="modal-backdrop" id="commandPaletteModal" style="display: none;" onclick="handlePaletteBackdrop(event)">
+    <div class="palette-card">
+      <div class="palette-input-box">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" id="paletteSearch" placeholder="Type a command or jump to document..." oninput="handlePaletteInput()">
+        <kbd>ESC</kbd>
+      </div>
+      <div class="palette-results" id="paletteResults">
+        <div class="palette-group-title">Navigation & Actions</div>
+        <div class="palette-item" onclick="switchView('review'); closeCommandPalette();">
+          <span>Go to Review Queue</span>
+          <kbd>Alt+1</kbd>
+        </div>
+        <div class="palette-item" onclick="switchView('documents'); closeCommandPalette();">
+          <span>View All Documents</span>
+          <kbd>Alt+2</kbd>
+        </div>
+        <div class="palette-item" onclick="switchView('vendors'); closeCommandPalette();">
+          <span>Open Vendor Master</span>
+          <kbd>Alt+3</kbd>
+        </div>
+        <div class="palette-item" onclick="switchView('reports'); closeCommandPalette();">
+          <span>View Spend Analytics</span>
+          <kbd>Alt+4</kbd>
+        </div>
+        <div class="palette-item" onclick="openErpModal(); closeCommandPalette();">
+          <span>Open ERP Payload Drawer</span>
+          <kbd>Alt+E</kbd>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AUDIT TIMELINE SLIDEOUT DRAWER -->
+  <div class="audit-drawer-backdrop" id="auditDrawer" style="display: none;" onclick="closeAuditDrawer(event)">
+    <div class="audit-drawer-panel">
+      <div class="drawer-header">
+        <h3>Cryptographic Audit Lineage Trail</h3>
+        <button class="btn-close" onclick="toggleAuditTimeline()">✕</button>
+      </div>
+      <div class="drawer-content">
+        <div class="timeline-container" id="timelineList"></div>
       </div>
     </div>
   </div>
