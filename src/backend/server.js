@@ -1,6 +1,7 @@
 import http from 'http';
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import { IngestionService } from '../ingestion/ingestionService.js';
 import { ExtractionEngine } from '../extraction/extractionEngine.js';
 import { ValidationEngine } from '../validation/validationEngine.js';
@@ -329,7 +330,7 @@ export class DocumentServer {
         return;
       }
 
-      const BASE = 'g:/My Drive/AI Product Factory — Session 03 — Document Intelligence';
+      const BASE = fileURLToPath(new URL('../../', import.meta.url));
       if (pathname === '/' || pathname === '/index.html') {
         this.serveFile(res, path.join(BASE, 'src/frontend/index.html'), 'text/html');
         return;

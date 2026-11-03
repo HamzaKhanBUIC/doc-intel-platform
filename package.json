@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/backend/server.js",
+    "start": "node start.js",
     "dev": "node src/backend/server.js",
     "test": "node --test tests/unit/*.test.js tests/integration/*.test.js tests/extraction/*.test.js tests/validation/*.test.js tests/adversarial/*.test.js",
     "test:unit": "node --test tests/unit/*.test.js",
